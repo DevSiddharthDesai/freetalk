@@ -4,18 +4,21 @@ import { User } from '../../models/user';
 
 const router = Router();
 
-router.post('/signup', async (req: Request, res: Response, next: NextFunction) => {
+router.post('/api/signup', async (req: Request, res: Response, next: NextFunction) => {
     
     const {email, password} = req.body;
 
     const user = await User.findOne({email});
 
-    if(user) return new Error('user with the same email already exists');
-
-    const newUser = new User({
+    if(user) { 
+        const error = new Error('user with the same email already exists') as CustomError;
+        error.status = 400;
+        return next(error);
+    }
+    const newUser = User.build({
         email,
         password
-    })
+    });
 
     await newUser.save();
 

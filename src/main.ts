@@ -2,7 +2,8 @@ import express, {Request, Response, NextFunction} from 'express';
 import {json, urlencoded} from 'body-parser'
 import cors from 'cors';
 import cookieSession from 'cookie-session';
-import { newPostRouter, deletePostRouter, updatePostRouter, readPostRouter, newCommentRouter, deleteCommentRouter } from './routes';
+import { newPostRouter, deletePostRouter, updatePostRouter, readPostRouter, newCommentRouter, deleteCommentRouter, signupRouter, signinRouter } from './routes';
+import { currentUser, requireAuth } from '../common';
 const connectDb = require('../../config/db');
 
 const app = express();
@@ -27,12 +28,17 @@ app.use(cookieSession({
     secure: false
 }));
 
-app.use(newPostRouter);
-app.use(deletePostRouter);
-app.use(updatePostRouter);
+app.use(currentUser);
+
+app.use(signupRouter);
+app.use(signinRouter);
+
+app.use(requireAuth, newPostRouter);
+app.use(requireAuth, deletePostRouter);
+app.use(requireAuth, updatePostRouter);
 app.use(readPostRouter);
-app.use(newCommentRouter);
-app.use(deleteCommentRouter);
+app.use(requireAuth, newCommentRouter);
+app.use(requireAuth, deleteCommentRouter);
 
 declare global {
     interface CustomError extends Error{
@@ -43,7 +49,7 @@ app.use((error: CustomError, req: Request, res: Response, next: NextFunction) =>
     if(error.status){
         return res.status(error.status).json({
             message: error.message
-        })
+        });
     }
 
     res.status(500).json({message: 'Something went wrong'});

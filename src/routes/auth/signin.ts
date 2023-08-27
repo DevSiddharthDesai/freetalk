@@ -5,13 +5,13 @@ import {authenticationService} from '../../../common';
 
 const router = Router();
 
-router.post('/signin', async (req: Request, res: Response, next: NextFunction) => {
+router.post('/api/signin', async (req: Request, res: Response, next: NextFunction) => {
     
     const {email, password} = req.body;
 
     const user = await User.findOne({email});
 
-    if(!user) return new Error('wrong credentials!');
+    if(!user) return new Error('wrong credentials!') as CustomError;
 
     const isEqual = await authenticationService.pwdCompare(user.password, password);
 
@@ -26,4 +26,6 @@ router.post('/signin', async (req: Request, res: Response, next: NextFunction) =
 
     res.status(200).send(user);
 });
+
+export {router as signinRouter}
 

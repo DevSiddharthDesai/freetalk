@@ -7,7 +7,6 @@ const router = Router();
 router.post('/api/comment/new/:postId', async (req: Request, res: Response, next: NextFunction) => {
 
    const {postId} = req.params;
-   console.log('Helklio');
 
    const {userName, content} = req.body; 
    

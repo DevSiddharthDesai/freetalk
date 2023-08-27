@@ -11,9 +11,9 @@ router.post('/api/post/new', async (req: Request, res: Response, next: NextFunct
     return next(error);
    }
 
-   const newPost = new Post({
-    title,
-    content
+   const newPost = Post.build({
+      title,
+      content,
    });
 
    await newPost.save();
