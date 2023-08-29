@@ -1,7 +1,7 @@
 import {Router, Request, Response, NextFunction} from 'express';
 import jwt from 'jsonwebtoken';
 import { User } from '../../models/user';
-import {authenticationService} from '../../../common';
+import {authenticationService, BadRequestError} from '../../../common';
 
 const router = Router();
 
@@ -15,7 +15,7 @@ router.post('/api/signin', async (req: Request, res: Response, next: NextFunctio
 
     const isEqual = await authenticationService.pwdCompare(user.password, password);
 
-    if(!isEqual) return next(new Error('Wrong Credentials'));
+    if(!isEqual) return next(new BadRequestError('Wrong Credentials'));
 
     const token = jwt.sign({
         email,
