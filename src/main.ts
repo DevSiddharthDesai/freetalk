@@ -5,6 +5,8 @@ import cookieSession from 'cookie-session';
 import { newPostRouter, deletePostRouter, updatePostRouter, readPostRouter, newCommentRouter, deleteCommentRouter, signupRouter, signinRouter } from './routes';
 import { currentUser, requireAuth } from '../common';
 const connectDb = require('../../config/db');
+import { PostRouter } from './post/post.router';
+import { AuthRouter } from './auth/auth.router';
 
 const app = express();
 
@@ -30,13 +32,9 @@ app.use(cookieSession({
 
 app.use(currentUser);
 
-app.use(signupRouter);
-app.use(signinRouter);
+app.use('/post', PostRouter);
+app.use('/auth', AuthRouter)
 
-app.use(requireAuth, newPostRouter);
-app.use(requireAuth, deletePostRouter);
-app.use(requireAuth, updatePostRouter);
-app.use(readPostRouter);
 app.use(requireAuth, newCommentRouter);
 app.use(requireAuth, deleteCommentRouter);
 
